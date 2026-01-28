@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -6,8 +5,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/vidhya192/spring-petclinic.git',
-                    branch: 'main'
+                git branch: 'main',
+                    url: 'https://github.com/spring-projects/spring-petclinic.git'
             }
         }
 
@@ -25,20 +24,31 @@ pipeline {
 
         stage('Package') {
             steps {
-                bat 'mvn clean package'
+                bat 'mvn package -DskipTests'
             }
         }
 
-       stage('Deploy') {
-    steps {
-        bat """
-        taskkill /F /IM java.exe >nul 2>&1
+        stage('Deploy') {
+            steps {
+                bat """
+                taskkill /F /IM java.exe >nul 2>&1
+                cd target
+                for %%f in (spring-petclinic*.jar) do start "" /B java -jar %%f --server.port=8081
+                """
+            }
+        }
+    }
 
-        cd target
-        for %%f in (spring-petclinic*.jar) do start "" /B java -jar %%f --server.port=8081
-        """
+    post {
+        failure {
+            echo 'Pipeline failed'
+        }
+        success {
+            echo 'Pipeline success'
+        }
     }
 }
+
  
 
 
