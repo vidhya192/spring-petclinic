@@ -3,12 +3,13 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/spring-projects/spring-petclinic.git'
-            }
-        }
-
+      stage('Checkout') {
+    steps {
+        git url: 'https://github.com/spring-projects/spring-petclinic.git',
+            branch: 'master'
+          }
+      }
+ 
         stage('Build') {
             steps {
                 bat 'mvn clean compile'
