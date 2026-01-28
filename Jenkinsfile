@@ -30,14 +30,15 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                bat '''
-                taskkill /F /IM java.exe > nul 2>&1
-                start "" /B java -jar target\\spring-petclinic-*.jar --server.port=8081
-                '''
-            }
-        }
+    steps {
+        bat '''
+        taskkill /F /IM java.exe >nul 2>&1
+        for %%f in (target\\spring-petclinic*.jar) do (
+            start "" /B java -jar "%%f" --server.port=8081
+        )
+        '''
     }
 }
+
 
 
